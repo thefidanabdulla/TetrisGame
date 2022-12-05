@@ -6,12 +6,14 @@ public class Piece : MonoBehaviour
     public TetrominoData data { get; private set; }
     public Vector3Int[] cells { get; private set; }
     public Vector3Int position { get; private set; }
+    public int rotationIndex { get; private set; }
 
     public void Initialize(Board board, Vector3Int position, TetrominoData data)
     {
        this.board = board; 
        this.position = position;
        this.data = data;
+       this.rotationIndex = 0;
        
        this.cells = new Vector3Int[data.cells.Length];
 
@@ -24,6 +26,13 @@ public class Piece : MonoBehaviour
     private void Update()
     {
         this.board.Clear(this);
+
+        if (Input.GetKeyDown(KeyCode.Q)) {
+            Rotate(-1);
+        } else if (Input.GetKeyDown(KeyCode.E))
+        {
+            Rotate(1);
+        }
 
         if(Input.GetKeyDown(KeyCode.A)) {
             Move(Vector2Int.left);
@@ -64,5 +73,24 @@ public class Piece : MonoBehaviour
             this.position = newPosition;
         }
         return valid;
+    }
+
+    private void Rotate(int direction)
+    {
+        this.rotationIndex += Wrap(this.rotationIndex + direction, 0, 4);
+
+        for(int i = 0; i < this.cells.Length; i++) { 
+            Vector3 cell = this.cells[i];
+        }
+    }
+
+    private int Wrap(int input, int min, int max)
+    {
+        if(input < min) {
+            return max - (min - input) % (max - min);
+        }else
+        {
+            return min + (input - min) % (max - min);
+        }
     }
 }
